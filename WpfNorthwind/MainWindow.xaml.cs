@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data.Entity;
 
 namespace WpfNorthwind
 {
@@ -20,9 +21,27 @@ namespace WpfNorthwind
     /// </summary>
     public partial class MainWindow : Window
     {
+        NorthwindEntities context = new NorthwindEntities();
+        CollectionViewSource custViewSource;
+        CollectionViewSource ordViewSource;
+
         public MainWindow()
         {
             InitializeComponent();
+            custViewSource = ((CollectionViewSource)(FindResource("customerViewSource")));
+            ordViewSource = ((CollectionViewSource)(FindResource("customerOrdersViewSource")));
+            DataContext = this;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+
+            System.Windows.Data.CollectionViewSource customerViewSource = ((System.Windows.Data.CollectionViewSource)(this.FindResource("customerViewSource")));
+            // Load data by setting the CollectionViewSource.Source property:
+            // customerViewSource.Source = [generic data source]
+
+            context.Customers.Load();
+            custViewSource.Source = context.Customers.Local;
         }
     }
 }
